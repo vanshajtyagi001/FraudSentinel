@@ -1,0 +1,17 @@
+# Virtual Environments
+venv/
+
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Data
+data/raw/*.csv
+data/processed/*.parquet
+
+# Model Artifacts
+artifacts/*.joblib
+
+# Large Outputs
+outputs/audit_trail.jsonl

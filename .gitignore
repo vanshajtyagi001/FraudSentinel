@@ -6,6 +6,9 @@ __pycache__/
 *.pyc
 *.pyo
 
+# macOS
+.DS_Store
+
 # Data
 data/raw/*.csv
 data/processed/*.parquet

@@ -30,11 +30,11 @@ Model evaluation prioritizes PR-AUC and cost-weighted business metrics over stan
 ## Documented Failure Case: Graceful Handling
 AI systems will inevitably fail. FraudSentinel is evaluated not just on its hits, but on how safely it handles misses.
 
-**Target:** Row `59218`
+**Target:** Row `22335`
 * **True Label:** Legitimate Customer (0)
-* **Model Score:** 0.4812 (Suspicious)
+* **Model Score:** 0.4865 (Suspicious)
 * **Action Taken:** `ESCALATE` (Routed to human, not blocked)
-* **SHAP Audit Explanation:** *Flagged primarily due to: recent velocity of transactions [3.15] (+0.42 risk impact), device signature [Unknown_Code] (+0.25 risk impact), billing region code [214.0] (+0.18 risk impact).*
+* **SHAP Audit Explanation:** *Flagged primarily due to: recent velocity of transactions [3.15] (+0.42 risk impact), device signature [Unknown_Code] (+0.14 risk impact), billing region code [214.0] (+0.12 risk impact).*
 
 **Defensibility:** The LightGBM model reasonably suspected this transaction because it exhibited a sudden velocity spike from an unrecognized device—a classic signature of a script attack. However, because the score fell into our `ESCALATE` buffer (0.35 - 0.55), the system did not automatically block the user. It queued the transaction for human review with the SHAP explanation attached, allowing an analyst to safely verify the edge-case without causing automated merchant friction.
 

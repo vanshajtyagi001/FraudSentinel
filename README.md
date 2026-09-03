@@ -8,6 +8,7 @@ Unchecked fraud spikes—such as credential stuffing or carding attacks—can de
 Real-world Razorpay transaction data is proprietary and inaccessible for this buildathon. This project utilizes the **IEEE-CIS Fraud Detection dataset** as a rigorous proxy. Despite being a public dataset, it effectively models real-world payment gateway challenges due to its severe class imbalance (3.5% fraud rate) and a rich mix of highly interpretable identity and transactional features.
 
 ## Architecture Overview
+![Architecture Diagram](assets/architectural_diagram.png)
 The pipeline processes raw data through five distinct stages:
 1. **Preprocessing & Optimization:** Downcasts numeric types to reduce memory footprint by ~45%, preventing OOM errors in memory-bound environments.
 2. **Temporal Spike Detection:** Engineers rolling-window z-scores to capture network-level velocity and amount anomalies rather than evaluating transactions in isolation.

@@ -35,7 +35,7 @@ AI systems will inevitably fail. FraudSentinel is evaluated not just on its hits
 * **True Label:** Legitimate Customer (0)
 * **Model Score:** 0.4865 (Suspicious)
 * **Action Taken:** `ESCALATE` (Routed to human, not blocked)
-* **SHAP Audit Explanation:** *Flagged primarily due to: recent velocity of transactions [3.15] (+0.42 risk impact), device signature [Unknown_Code] (+0.14 risk impact), billing region code [214.0] (+0.12 risk impact).*
+* **SHAP Audit Explanation:** *Flagged primarily due to: card type (Credit/Debit) [credit] (+0.58 risk impact), transaction amount [219.95] (+0.40 risk impact), card issuing bank [514.0] (+0.23 risk impact).*
 
 **Defensibility:** The LightGBM model reasonably suspected this transaction because it exhibited a sudden velocity spike from an unrecognized device—a classic signature of a script attack. However, because the score fell into our `ESCALATE` buffer (0.35 - 0.55), the system did not automatically block the user. It queued the transaction for human review with the SHAP explanation attached, allowing an analyst to safely verify the edge-case without causing automated merchant friction.
 
@@ -51,3 +51,15 @@ cd FraudSentinel
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
+
+**2. Run the Pipeline**
+```bash
+python src/preprocessing.py
+python src/train.py
+python src/decision_layer.py
+python src/explain.py
+```
+
+## Known Limitations & Next Steps
+- LightGBM's multi-threaded training introduces minor run-to-run non-determinism near the decision boundary, even with a fixed random seed. Pinning `deterministic=True` and single-threaded training (`n_jobs=1`) would resolve this given more time.
+- Given more time: streaming feature computation for real-time velocity scoring, probability calibration (e.g. isotonic regression) to tighten the cost-weighted threshold analysis, and richer categorical embeddings in place of ordinal encoding.

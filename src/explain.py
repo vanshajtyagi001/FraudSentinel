@@ -142,7 +142,6 @@ def extract_global_importance(model, X_test: pd.DataFrame):
 def isolate_failure_case(model, X_test: pd.DataFrame, y_test: pd.Series):
     """
     Hunts for a 'reasonable' False Positive in the ESCALATE queue.
-    Avoids picking the exact boundary line or the very first array element.
     """
     logger.info("Hunting for a deliberate False Positive in the ESCALATE gray-zone...")
     probs = model.predict_proba(X_test)[:, 1]
@@ -156,8 +155,12 @@ def isolate_failure_case(model, X_test: pd.DataFrame, y_test: pd.Series):
         fp_mask = (y_test == 0) & (probs >= 0.35) & (probs <= 0.55)
         fp_indices = np.where(fp_mask)[0]
         
-    # Pick a row from the absolute middle of the available matches to ensure it is deliberate
-    target_idx = fp_indices[len(fp_indices) // 2]
+    # FIX: Sort the indices to guarantee array order, then use a hard-coded seed 
+    # to select the exact same transaction every single time the script runs.
+    fp_indices_sorted = np.sort(fp_indices)
+    np.random.seed(42)
+    target_idx = np.random.choice(fp_indices_sorted)
+    
     X_fail = X_test.iloc[target_idx]
     score = probs[target_idx]
     

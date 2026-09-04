@@ -60,7 +60,8 @@ def train_model(X_train: pd.DataFrame, y_train: pd.Series) -> LGBMClassifier:
     lgbm = LGBMClassifier(
         scale_pos_weight=imbalance_ratio,
         random_state=42,
-        n_jobs=-1
+        deterministic=True,
+        n_jobs=1  # Forces single-threaded execution to prevent floating-point variances
     )
 
     # Lightweight grid for Buildathon time constraints
